@@ -168,7 +168,6 @@ function buildTaskDiscoverySection(taskText: string, cwd: string): string {
 		sections.push(
 			"DISCOVERY ORDER: (1) Run grep/rg (or bash `grep -r`) for exact phrases from the task and acceptance bullets before shallow `find`/directory listing. (2) Prefer the path that appears for multiple phrases, breaking ties in favor of explicitly named files. (3) Use find/ls only for gaps.",
 		);
-		sections.push("READ BEFORE EDIT: Always read the FULL target file (not just a snippet) before editing. This prevents wrong anchors, missed patterns, and incomplete understanding of the file's existing logic.");
 
 		if (literalPaths.length > 0) {
 			sections.push("FILES EXPLICITLY NAMED IN THE TASK (highest priority — start here):");
@@ -234,7 +233,7 @@ function buildTaskDiscoverySection(taskText: string, cwd: string): string {
 				baseDir = topFile.substring(0, topFile.lastIndexOf("/"));
 			}
 			if (!baseDir) {
-				const fallbacks = ["src", "app", "lib", "scripts", "packages"];
+				const fallbacks = ["src", "app", "lib", "scripts", "packages", "bin", "cmd", "test", "tests"];				
 				for (const candidate of fallbacks) {
 					try {
 						const stat = statSync(resolve(cwd, candidate));

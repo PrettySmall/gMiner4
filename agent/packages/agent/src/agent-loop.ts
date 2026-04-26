@@ -357,7 +357,7 @@ async function runLoop(
 			return !wasEdited(f);
 		});
 		
-		const breadthStopThreshold = 6
+		const breadthStopThreshold = 5
 		let breadthHint = "";
 		if (consecutiveEditsOnSameFile >= breadthStopThreshold && uneditedTargets.length > 0) {
 			breadthHint = ` STOP editing \`${normTarget}\` — you have made ${consecutiveEditsOnSameFile} consecutive edits on it (limit: ${breadthStopThreshold}). ${uneditedTargets.length} file(s) still need ANY edit: ${uneditedTargets

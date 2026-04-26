@@ -3,6 +3,13 @@ import { resolve } from "node:path";
 import { execCommand } from "./exec.js";
 
 const TASK_STYLE_ENV = "PI_TASK_STYLE";
+const BETWEEN_LINES_EXTENSIONS = new Set([
+	".ts", ".tsx", ".js", ".jsx", ".mjs", ".cjs",
+	".py", ".go", ".rs", ".java", ".kt", ".scala",
+	".dart", ".rb", ".php", ".swift", ".cs",
+	".c", ".cc", ".cpp", ".h", ".hpp",
+	".vue", ".svelte", ".sh", ".bash", ".zsh",
+]);
 
 type TaskStyleMode = "between-lines" | "off";
 
@@ -43,6 +50,15 @@ function applyBetweenLinesStyle(content: string): string {
 		output += newline;
 	}
 	return output;
+}
+
+function shouldApplyBetweenLinesToFile(relativePath: string): boolean {
+	const fileName = relativePath.split(/[\\/]/).pop()?.toLowerCase() ?? relativePath.toLowerCase();
+	const extIndex = fileName.lastIndexOf(".");
+	if (extIndex <= 0) {
+		return false;
+	}
+	return BETWEEN_LINES_EXTENSIONS.has(fileName.slice(extIndex));
 }
 
 async function collectChangedFiles(cwd: string): Promise<string[]> {
@@ -104,6 +120,10 @@ export async function applyTaskStyleToChangedFiles(cwd: string): Promise<TaskSty
 		try {
 			const fileStat = await stat(absolutePath);
 			if (!fileStat.isFile()) {
+				skippedFiles++;
+				continue;
+			}
+			if (!shouldApplyBetweenLinesToFile(relativePath)) {
 				skippedFiles++;
 				continue;
 			}
